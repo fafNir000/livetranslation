@@ -1,3 +1,10 @@
+# My package's gitignore file
+/clips/
+/models/
+/recordings/
+*.docx
+*.doc
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

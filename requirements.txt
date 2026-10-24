@@ -1,0 +1,43 @@
+# Live Armenian -> English transcription/translation
+# Target: Windows 10/11, Python 3.11 (64-bit), NVIDIA GPU (CUDA 12.x)
+#
+# INSTALL ORDER (important on Windows):
+#   1) python -m venv .venv && .venv\Scripts\activate
+#   2) Install CUDA-enabled PyTorch FIRST (otherwise pip pulls the CPU-only build):
+#        pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu128
+#   3) pip install -r requirements.txt
+#   4) Verify:  python -c "import torch; print(torch.cuda.is_available())"   -> True
+#
+# Versions are lower bounds for now. Once the skeleton runs on the target laptop,
+# run `pip freeze > requirements.lock.txt` and install from that before the interview.
+
+# --- Core numerics / audio I/O ---------------------------------------------
+numpy>=1.26
+soundfile>=0.12          # read/write WAV (file-replay mode, test clips)
+soxr>=0.3                # fast, high-quality resampling (48 kHz stereo -> 16 kHz mono)
+PyAudioWPatch>=0.2.12    # PortAudio fork with WASAPI loopback (mic + system audio)
+
+# --- Deep learning runtime (installed in step 2; listed so pip checks it) ---
+torch>=2.5
+torchaudio>=2.5
+
+# --- Voice activity detection -----------------------------------------------
+silero-vad>=5.1
+
+# --- Speech-to-text ---------------------------------------------------------
+# Uses CTranslate2 (CUDA 12 + cuDNN 9). If you see "cudnn_ops64_9.dll not found",
+# `import torch` before faster_whisper so the DLLs bundled with torch get loaded.
+faster-whisper>=1.1
+
+# --- Translation (NLLB-200 via CTranslate2; tokenizer from transformers) -----
+transformers>=4.44
+sentencepiece>=0.2
+
+# --- Speaker identification -------------------------------------------------
+# Gated models: accept terms on Hugging Face, put HF_TOKEN in .env (never commit it).
+pyannote.audio>=3.3
+huggingface_hub>=0.24
+python-dotenv>=1.0
+
+# --- Benchmarks & tests (dev) -----------------------------------------------
+pytest>=8.0
